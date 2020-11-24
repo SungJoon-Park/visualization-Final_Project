@@ -15,6 +15,7 @@ export default {
     };
   },
 
+  
   mapProcess: function (data) {
     console.log(data);
 

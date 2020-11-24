@@ -1,17 +1,17 @@
 import mapDataProcessor from './js/map/mapDataProcessor.js';
-import MapChart from './js/map/mapchart.js';
+import MapChart from './js/map/mapChart.js';
 import PieChart from './js/pie/piechart.js';
 import BubbleChart from './js/bubble/Bubble.js';
 
-// Promise.all([
-//   d3.json('./data/raw/world-110m.json'),
-//   d3.csv('./data/clean/streaming_platform_map.csv', d3.autoType),
-// ]).then(([worldmap, data]) => {
-//   const processedObj = mapDataProcessor.mapProcess(data);
+Promise.all([
+  d3.json('./data/raw/world-110m.json'),
+  d3.csv('./data/clean/streaming_platform_map.csv', d3.autoType),
+]).then(([worldmap, data]) => {
+  const processedObj = mapDataProcessor.mapProcess(data);
 
-//   const mapChart = MapChart('#map-chart-container');
-//   mapChart.update(worldmap, processedObj);
-// });
+  const mapChart = MapChart('#map-chart-container');
+  mapChart.update(worldmap, processedObj);
+});
 
 d3.csv('./data/clean/streaming_platform_pie.csv', d3.autoType).then((data) => {
   let type = 'all';
