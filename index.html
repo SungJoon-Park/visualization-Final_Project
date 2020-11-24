@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Milligram CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+
+    <!-- Load Javascript files -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.1.1/d3.min.js"></script>
+    <script defer src="https://unpkg.com/topojson@3"></script>
+
+
+    <!-- Your code -->
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="main.js" type="module"></script>
+    <script defer src="js/line/linechart.js" type="module"></script>
+
+    <title>Final Project: Rise of Streaming Platform</title>
+
+</head>
+<body>
+    <section class='section-container'>
+        <h1>
+          Rise of Streaming Platform 
+        </h1>
+      </section>
+
+      <section class='section-container'>
+        <h4>By Mooyeong Lee, Sung Joon Park, Brishti Saha, and Ga Young Lee</h4>
+      </section>
+
+      <h1>Movie Tickets & Netflix Subscription Trend</h1>
+      <section class='vis-container'>
+          <div id='line-chart-container'></div>
+      </section>
+
+      <h1>Information by each country</h1>
+      <section class='vis-container'>
+          <div id='map-chart-container'>
+              Map Chart goes here
+          </div>
+          <article class='side-charts'>
+              <div id='bar-chart-container'>
+                  Bar Chart on the side
+              </div>
+              <div id='IMDB-chart-container'>
+                  IMDB Visualization
+                  <div>
+                      Work in Progress
+                  </div>
+              </div>
+              <div id='Rotten-tomato-container'>
+                  Rotten tomato container
+              </div>
+          </article>
+      </section>
+
+      <h1>Bubble Chart by Genres</h1>
+      <section class='vis-container'>
+        <div id='bubble-chart-container'>
+            Bubble Chart goes here
+            <div id="toolbar">
+                <button id="All" class="button active">All</button>
+                <button id="Genres" class="button">By Genres</button>
+            </div>
+        </div>
+        <article class='side-charts'>
+            <div id = 'runtime-distribution'>
+                Runtime Distribution
+            </div>
+        </article>
+    </section>
+
+
+    <h1>Genres by Content Rating</h1>
+    <section class='vis-container'>
+        <div id='pie-chart-container'>
+            Pie Chart goes here
+            <label for="group-by">Group By</label>
+            <select id="group-by">
+                <option value="all">All Ages</option>
+                <option value="7+">7+</option>
+                <option value="13+">13+</option>
+                <option value="16+">16+</option>
+                <option value="18+">18+</option>v
+            </select>
+        </div>
+        <div class='tooltip-pie'></div>
+    </section>
+
+</body>
+</html>
