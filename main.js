@@ -1,5 +1,5 @@
-// import mapDataProcessor from './js/map/mapDataProcessor.js';
-// import MapChart from './js/map/mapChart.js';
+import mapDataProcessor from './js/map/mapDataProcessor.js';
+import MapChart from './js/map/mapchart.js';
 import PieChart from './js/pie/piechart.js';
 import BubbleChart from './js/bubble/Bubble.js';
 
