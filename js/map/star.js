@@ -1,58 +1,56 @@
 export default function d3Star() {
-   let size = 20,
-    x = 0,
-    y = 0,
-    value = 1.0, //Range is 0.0 - 1.0
-    borderWidth = 3,
-    borderColor = 'black',
-    starColor = '#FFB500',
-    backgroundColor = 'white';
+  let size = 20;
+  let x = 0;
+  let y = 0;
+  let value = 1.0; //Range is 0.0 - 1.0
+  let borderWidth = 3;
+  let borderColor = 'CAAA6F';
+  let starColor = '#FFB500';
+  let backgroundColor = 'white';
 
   function star(selection) {
-    var line = d3
-        .line()
-        .x(function (d) {
-          return d.x;
-        })
-        .y(function (d) {
-          return d.y;
-        })
-        .curve('linear-closed'),
-      rad = function (deg) {
-        return (deg * Math.PI) / 180;
-      },
-      cos = function (deg) {
-        return Math.cos(rad(deg));
-      },
-      sin = function (deg) {
-        return Math.sin(rad(deg));
-      },
-      tan = function (deg) {
-        return Math.tan(rad(deg));
-      },
-      n = size,
-      m = n / 2,
-      h = m * tan(36),
-      k = h / sin(72),
-      //(x, y) points at the leftmost point of the star, not the center
-      coordinates = [
-        { x: x, y: y },
-        { x: x + k, y: y },
-        { x: x + m, y: y - h },
-        { x: x + n - k, y: y },
-        { x: x + n, y: y },
-        { x: x + n - k * cos(36), y: y + k * sin(36) },
-        { x: x + n * cos(36), y: y + n * sin(36) },
-        { x: x + m, y: y + h },
-        { x: x + n - n * cos(36), y: y + n * sin(36) },
-        { x: x + k * cos(36), y: y + k * sin(36) },
-      ];
+    const line = d3
+      .line()
+      .x((d) => d.x)
+      .y((d) => d.y)
+      .curve(d3.curveLinearClosed);
+
+    const rad = function (deg) {
+      return (deg * Math.PI) / 180;
+    };
+    const cos = function (deg) {
+      return Math.cos(rad(deg));
+    };
+    const sin = function (deg) {
+      return Math.sin(rad(deg));
+    };
+    const tan = function (deg) {
+      return Math.tan(rad(deg));
+    };
+    let n = size;
+    let m = n / 2;
+    let h = m * tan(36);
+    let k = h / sin(72);
+    //(x, y) points at the leftmost point of the star, not the center
+    let coordinates = [
+      { x: x, y: y },
+      { x: x + k, y: y },
+      { x: x + m, y: y - h },
+      { x: x + n - k, y: y },
+      { x: x + n, y: y },
+      { x: x + n - k * cos(36), y: y + k * sin(36) },
+      { x: x + n * cos(36), y: y + n * sin(36) },
+      { x: x + m, y: y + h },
+      { x: x + n - n * cos(36), y: y + n * sin(36) },
+      { x: x + k * cos(36), y: y + k * sin(36) },
+    ];
 
     //inside star
     selection
       .append('path')
       .attr('d', line(coordinates))
-      .style({ 'stroke-width': 0, fill: starColor });
+      .attr('fill', starColor)
+      .attr('stroke-width', 0);
 
     //Rect for clipping
     //In order to avoid potential ID duplicates for clipping, clip-path is not used here
@@ -65,11 +63,12 @@ export default function d3Star() {
       .style('fill', backgroundColor);
 
     //border of the star
-    selection.append('path').attr('d', line(coordinates)).style({
-      'stroke-width': borderWidth,
-      fill: 'none',
-      stroke: borderColor,
-    });
+    selection
+      .append('path')
+      .attr('d', line(coordinates))
+      .attr('stroke-width', borderWidth)
+      .attr('fill', 'none')
+      .attr('stroke', borderColor);
   }
 
   star.x = function (val) {

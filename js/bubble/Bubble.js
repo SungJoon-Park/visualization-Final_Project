@@ -1,18 +1,18 @@
 import DensityChart from './Density.js';
 
 export default function BubbleChart(container) {
-  const w = 1200,
-    h = 600;
+  const width = 1200,
+    height = 600;
   const rScale = d3.scaleLinear().range([4, 10]).clamp(true);
   const cScale = d3.scaleOrdinal(d3.schemeTableau10);
-  const centerScale = d3.scalePoint().padding(1).range([0, w]);
+  const centerScale = d3.scalePoint().padding(1).range([0, width]);
   const forceStrength = 0.05;
 
   let svg = d3
     .select(container)
     .append('svg')
-    .attr('width', w)
-    .attr('height', h);
+    .attr('width', width)
+    .attr('height', height);
 
   // const drag = (simulation) => {
   //     function started(event) {
@@ -37,8 +37,6 @@ export default function BubbleChart(container) {
   //         .on("drag", dragged)
   //         .on("end", ended);
   // }
-
-  const density = DensityChart('#runtime-distribution');
 
   function update(data) {
     //for color variations
@@ -77,175 +75,214 @@ export default function BubbleChart(container) {
       } else {
         d.category = 'genre6';
       }
+      if (d.Netflix == 1) d.platform = 'Netflix';
+      else if (d.Hulu == 1) d.platform = 'Hulu';
+      else if (d.Prime_Video == 1) d.platform = 'Prime';
+      else d.platform = 'Disney';
     });
-
     rScale.domain(d3.extent(data, (d) => d.IMDb));
 
     data.forEach(function (d) {
-      d.x = w / 2;
-      d.y = h / 2;
+      d.x = width / 2;
+      d.y = height / 2;
     });
 
-    var circles = svg
-      .selectAll('circle')
-      .data(data)
-      .join('circle')
-      .attr('r', (d) => rScale(d.IMDb))
-      .attr('cx', (d, i) => {
-        return 175 + 25 * i + 2 * i ** 2;
-      })
-      .attr('cy', (d) => 250)
-      .style('fill', (d, i) => {
-        return cScale(d.category);
-      })
-      // .style("stroke", "black")
-      // .style("stroke-width", 1)
-      .style('pointer-events', 'all');
-    // .call(drag(simulation));
+    
+    let density = DensityChart('.density');
 
-    circles.append('title').text((d) => d.Title);
-
-    // circles
-    //     .on("mouseover", (event, d) => {
-
-    //         d3.select('.tooltip')
-    //             .html(() => {
-    //                 console.log(d.Title);
-    //                 console.log(d.Genres);
-    //                 console.log(d.IMDb);
-    //                 return d.Genres
-    //             });
-    //     })
-    //     .on("mouseout", (event, d) => {
-
-    //         d3.select('.tooltip')
-    //             .style('display', 'none');
-    //     });
-
-    circles.on('click', (event, d) => {
-      density.remove();
-
-      density.update(data, d.category);
-    });
-    circles.on('dbclick', (event, d) => {
-      density.remove();
-    });
-
-    function ticked() {
-      circles
-        .attr('cx', function (d) {
-          return d.x;
+    function showCircles() {
+      var circles = svg
+        .selectAll('circle')
+        .data(data)
+        .join('circle')
+        .attr('r', (d) => rScale(d.IMDb))
+        .attr('cx', (d, i) => {
+          return 175 + 25 * i + 2 * i ** 2;
         })
-        .attr('cy', function (d) {
-          return d.y;
+        .attr('cy', (d) => 250)
+        .style('fill', (d, i) => {
+          return cScale(d.category);
+        })
+        // .style("stroke", "black")
+        // .style("stroke-width", 1)
+        .style('pointer-events', 'all');
+      // .call(drag(simulation));
+
+      circles
+        .on('mouseover', function (event, d) {
+          let xPosition = parseFloat(d3.select(this).attr('cx'));
+          let yPosition = parseFloat(d3.select(this).attr('cy'));
+
+          //Update the tooltip position and value
+          d3.select('#tooltip2')
+            .style('left', xPosition + 'px')
+            .style('top', yPosition + 'px')
+            .select('#title')
+            .text(d.Title);
+          d3.select('#tooltip2')
+            .style('left', xPosition + 'px')
+            .style('top', yPosition + 'px')
+            .select('#genre')
+            .text(d.Genres);
+          // Show the tooltip
+          d3.select('#tooltip2').classed('hidden', false);
+        })
+        .on('mouseout', function (d) {
+          //Hide the tooltip
+          d3.select('#tooltip2').classed('hidden', true);
         });
+
+      circles.on('click', (event, d) => {
+        density.update(data, d.category, cScale(d.category));
+      });
+
+      function ticked() {
+        circles
+          .attr('cx', function (d) {
+            return d.x;
+          })
+          .attr('cy', function (d) {
+            return d.y;
+          });
+      }
+      simulation.on('tick', ticked);
     }
 
     const simulation = d3
-      .forceSimulation()
+      .forceSimulation(data)
+      // .force('charge', d3.forceManyBody().strength(0))
+      .force(
+        'y',
+        d3
+          .forceY()
+          .y(height / 2)
+          .strength(0.05)
+      )
+      .force(
+        'x',
+        d3
+          .forceX()
+          .x(width / 2)
+          .strength(0.05)
+      )
+      // .force('collision', d3.forceCollide().radius(d3.max(data, d => d.IMDb)).iterations(15))
       .force(
         'collide',
-        d3.forceCollide(d3.max(data, (d) => d.IMDb)).iterations(5)
-      )
-      // .force("charge", d3.forceManyBody().strength(5))
-      .force('y', d3.forceY().y(h / 2))
-      .force('x', d3.forceX().x(w / 2));
+        d3.forceCollide(d3.max(data, (d) => d.IMDb) * 0.8).iterations(15)
+      );
+    // .force("charge", d3.forceManyBody().strength(5))
 
-    simulation.nodes(data).on('tick', ticked);
-
-    let color_domain = cScale.domain().sort();
-
-    // let legend = svg.selectAll('rect')
-    //     .data(color_domain)
-    //     .enter()
-    //     .append('rect')
-    //     .attr('class', 'box')
-    //     .attr('width', 10)
-    //     .attr('height', 10)
-    //     .attr('x', 1000)
-    //     .attr('y', (d, i) => 300 + i * 15)
-    //     .attr('fill', d => cScale(d));
-
-    // let label = svg.selectAll('div')
-    //     .data(color_domain)
-    //     .join('text')
-    //     .attr('class', 'region')
-    //     .text(d => {
-    //         let genre_title;
-    //         if (d === "genre1") {
-    //             genre_title = "Action & Adventure & Sci-Fi & Fantasy"
-    //         } else if (d === "genre2") {
-    //             genre_title = "Comedy & Talk-Show & Game-Show & Reality-TV"
-    //         } else if (d === "genre3") {
-    //             genre_title = "Biography & Documentary & History"
-    //         } else if (d === "genre4") {
-    //             genre_title = "Horror & Mystery & Thriller & Crime & Film-Noir"
-    //         } else if (d === "genre5") {
-    //             genre_title = "Drama & Romance & Family & Animation"
-    //         } else {
-    //             genre_title = "Others"
-    //         }
-    //         return genre_title;
-    //     })
-    //     .attr('x', 1000 + 15)
-    //     .attr('y', (d, i) => 308 + i * 15)
-    //     .attr('text-anchor', 'beginning')
-    //     .attr('font-size', 12);
+    // simulation
+    //     .nodes(data)
+    //     .on("tick", ticked);
 
     function hideTitles() {
       svg.selectAll('.title').remove();
     }
 
+    // function showTitles(byVar, scale) {
+    //     // Another way to do this would be to create
+    //     // the year texts once and then just hide them.
+    //     // let box = svg.selectAll('.title')
+    //     //     .data(scale.domain())
+    //     //     .join('rect')
+    //     //     .attr('class', 'text box')
+    //     //     .attr('x', (d) => scale(d)-80)
+    //     //     .attr('y', 300)
+    //     //     .attr('width',150)
+    //     //     .attr('height',20)
+    //     //     .attr('opacity',0.4);
+    //     var titles = svg.selectAll('.title')
+    //         .data(scale.domain())
+    //         .join('text')
+    //         .attr('class', 'title')
+    //         .attr('x', (d) => scale(d))
+    //         .attr('y', 300)
+    //         .attr('text-anchor', 'middle')
+    //         .style("font-size", 16)
+    //         .style("font-weight", "bold")
+    //         .html(d => {
+    //             let genre_title;
+    //             if (d === "genre1") {
+    //                 // genre_title = "Action & Adventure & Sci-Fi & Fantasy"
+    //                 genre_title = "Action & Adventure"
+    //             } else if (d === "genre2") {
+    //                 // genre_title = "Comedy & Talk-Show & Game-Show & Reality-TV"
+    //                 genre_title = "Comedy & Shows"
+    //             } else if (d === "genre3") {
+    //                 genre_title = "Bio & Documentary"
+    //             } else if (d === "genre4") {
+    //                 genre_title = "Horror & Crime"
+    //             } else if (d === "genre5") {
+    //                 genre_title = "Drama & Family & Animation"
+    //             } else {
+    //                 genre_title = "Others"
+    //             }
+    //             return genre_title;
+    //         });
+
+    //     titles.exit().remove()
+    // }
     function showTitles(byVar, scale) {
-      // Another way to do this would be to create
-      // the year texts once and then just hide them.
-      // let box = svg.selectAll('.title')
-      //     .data(scale.domain())
-      //     .join('rect')
-      //     .attr('class', 'text box')
-      //     .attr('x', (d) => scale(d)-80)
-      //     .attr('y', 300)
-      //     .attr('width',150)
-      //     .attr('height',20)
-      //     .attr('opacity',0.4);
-      var titles = svg
-        .selectAll('.title')
-        .data(scale.domain())
-        .join('text')
+      var titles = svg.selectAll('.title').data(scale.domain());
+
+      titles
+        .enter()
+        .append('text')
         .attr('class', 'title')
+        .merge(titles)
         .attr('x', (d) => scale(d))
-        .attr('y', 300)
+        .attr('y', 100)
         .attr('text-anchor', 'middle')
-        .style('font-size', 16)
         .style('font-weight', 'bold')
-        .html((d) => {
+        .text((d) => {
           let genre_title;
           if (d === 'genre1') {
             // genre_title = "Action & Adventure & Sci-Fi & Fantasy"
-            genre_title = 'Action & Adventure';
+            return 'Action & Adventure';
           } else if (d === 'genre2') {
             // genre_title = "Comedy & Talk-Show & Game-Show & Reality-TV"
-            genre_title = 'Comedy & Shows';
+            return 'Comedy & Shows';
           } else if (d === 'genre3') {
-            genre_title = 'Bio & Documentary';
+            return 'Bio & Documentary';
           } else if (d === 'genre4') {
-            genre_title = 'Horror & Crime';
+            return 'Horror & Crime';
           } else if (d === 'genre5') {
-            genre_title = 'Drama & Family & Animation';
-          } else {
-            genre_title = 'Others';
+            return 'Drama & Family & Animation';
+          } else if (d === 'genre6') {
+            return 'Others';
           }
-          return genre_title;
+          return byVar + ' ' + d;
         });
+      titles.on('click', (event, d) => {
+        d3.event.stopPropagation();
 
+        density.update(data, d.category, cScale(d.category));
+      });
       titles.exit().remove();
+    }
+    let comments = svg
+      .append('text')
+      .attr('class', 'comments')
+      .attr('x', width / 2)
+      .attr('y', height / 2)
+      .attr('text-anchor', 'middle')
+      .style('font-weight', 'bold')
+      .text('Click on the button to see the bubbles!');
+    comments.exit().remove();
+
+    function hideComments() {
+      comments.remove();
     }
 
     function splitBubbles(byVar) {
-      if (byVar === 'All') {
-        hideTitles();
-        simulation.force('x', d3.forceX().x(w / 2));
-      } else if (byVar === 'Genres') {
+      // if (byVar === "All") {
+      //     showTitles(byVar, centerScale);
+      //     simulation.force("x", d3.forceX().x(w / 2));
+      // }
+      if (byVar === 'Genre') {
+        hideComments();
+        showCircles();
         const category_map = data.map((d) => d.category);
         category_map.sort();
 
@@ -258,6 +295,20 @@ export default function BubbleChart(container) {
             .forceX()
             .strength(forceStrength)
             .x((d) => centerScale(d.category))
+        );
+      } else if (byVar === 'Platform') {
+        hideComments();
+        showCircles();
+        const platform_map = data.map((d) => d.platform);
+        platform_map.sort();
+        centerScale.domain(platform_map);
+        showTitles(byVar, centerScale);
+        simulation.force(
+          'x',
+          d3
+            .forceX()
+            .strength(forceStrength)
+            .x((d) => centerScale(d.platform))
         );
       }
 

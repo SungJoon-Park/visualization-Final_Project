@@ -15,10 +15,7 @@ export default {
     };
   },
 
-  
   mapProcess: function (data) {
-    console.log(data);
-
     const obj = {};
 
     for (let i = 0; i < data.length; i++) {
@@ -101,7 +98,7 @@ export default {
     const arr = [0, 0, 0, 0, 0];
     let index = 0;
     while (number > 0) {
-      arr[index] = number;
+      arr[index] = Math.min(+number.toFixed(2), 2) / 2;
       number -= 2;
       index++;
     }

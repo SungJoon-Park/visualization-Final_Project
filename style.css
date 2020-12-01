@@ -33,14 +33,40 @@ h3 {
   text-align: center;
 }
 
+#title {
+  margin-top: 20vh;
+}
+
+.text-block {
+  font-size: 25px;
+  margin-top: 20vh;
+}
+
+#page-intro p {
+  width: 700px;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
 /* Jane */
-.tooltip {
+.tooltip-line {
   display: none;
+  position: absolute;
   font-size: 13px;
-  padding: 3px;
-  background-color: rgb(7, 8, 8);
+  padding: 4px;
+  background-color:steelblue;
   color: white;
-  border-radius: 5px;
+  border-radius: 8px;
+}
+
+.tooltip-line1 {
+  display: none;
+  position: absolute;
+  font-size: 13px;
+  padding: 4px;
+  background-color: red;
+  color: white;
+  border-radius: 8px;
 }
 /* End of Jane */
 

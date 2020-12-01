@@ -16,7 +16,7 @@ export default function BarChart(container) {
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
   // Create scales
-  const xScale = d3.scaleBand().rangeRound([0, width]).paddingInner(0.1);
+  const xScale = d3.scaleBand().rangeRound([0, width]).paddingInner(0.2);
   const yScale = d3.scaleLinear().range([height, 0]);
 
   const xAxis = d3.axisBottom().scale(xScale);
@@ -27,13 +27,18 @@ export default function BarChart(container) {
 
   function update(data) {
     const platforms = data.map((d) => d.platform);
+    const countMax = d3.max(data, (d) => d.count);
+
+    console.log('barchart update data', data);
     console.log('platforms', platforms);
+
     xScale.domain(platforms);
-    yScale.domain(d3.extent(data, (d) => d.count));
+    yScale.domain([0, countMax + 1]);
+    yAxis.ticks(Math.min(countMax + 1, 10));
 
-    console.log('barchart update', data);
+    group.selectAll('rect').remove();
 
-    const rects = group.selectAll('rect').data(data, (d) => d.count);
+    const rects = group.selectAll('rect').data(data);
 
     rects
       .enter()
@@ -47,9 +52,32 @@ export default function BarChart(container) {
 
     rects.exit().remove();
 
-    xAxisGroup.attr('transform', 'translate(0,' + height + ')').call(xAxis);
+    xAxisGroup
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(xAxis)
+      .call((g) =>
+        g
+          .append('text')
+          .attr('x', width + 45)
+          .attr('y', 0)
+          .attr('font-weight', 'bold')
+          .attr('text-anchor', 'end')
+          .attr('fill', 'black')
+          .text('Platform')
+      );
 
-    yAxisGroup.call(yAxis);
+    yAxisGroup
+      .call(yAxis)
+      .call((g) =>
+        g
+          .append('text')
+          .attr('x', 5)
+          .attr('y', -3)
+          .attr('fill', 'black')
+          .attr('font-weight', 'bold')
+          .attr('text-anchor', 'start')
+          .text('Movie Count')
+      );
   }
 
   return {
