@@ -1,32 +1,97 @@
-
-.bars:hover {
-    fill: #5aada5;
-}
-#tooltip, #tooltip2 {
+/* .column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: black;
+} */
+/* 
+.box {
     position: absolute;
-    width: 100px;
-    height: auto;
-    padding: 10px;
-    background-color: #e0bcb0;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    -webkit-box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.4);
-    -moz-box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.4);
-    box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.4);
-    pointer-events: none;
-    text-align: center;
+    left: 0%;
+    width: 110%;
+    height: 60%;
+    margin-left: 0px;
+    margin-top: 20%;
+    padding-left: 35px;
+    padding-right: 30px;
+    padding-top: 35px;
+} */
+#comment-1 {
+  font-size: 18px;
+
+}
+
+#heading-1 {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+#tooltip,
+#tooltip2 {
+  position: absolute;
+  width: 200px;
+  height: auto;
+  padding: 5px;
+  background-color: orange;
+  opacity: 0.8;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  text-align: center;
+}
+
+#tooltip {
+  width: 100px;
 }
 
 #tooltip.hidden,
 #tooltip2.hidden {
-    display: none;
+  display: none;
 }
 
 #tooltip p,
 #tooltip2 p {
-    margin: 0;
-    font-family: sans-serif;
-    font-size: 16px;
-    line-height: 20px;
+  margin: 0;
+  /* font-family: sans-serif; */
+  font-size: 14px;
+  line-height: 20px;
+  color: white;
+}
+
+#tooltip2 .inputs,
+#tooltip .inputs {
+  font-size: 11px;
+}
+
+#play-button {
+  text-align: center;
+  font-size: 15px;
+  padding-left: 12px;
+  padding-right: 12px;
+  vertical-align: middle;
+  justify-content: center;
+  background-color: orange;
+  opacity: 0.8;
+  border-color: rgb(29, 140, 231);
+}
+
+.track {
+  stroke-linecap: round;
+  stroke: gray;
+  stroke-opacity: 0.3;
+  stroke-width: 8px;
+}
+
+.handle {
+  r: 5;
+}
+
+.ticks{
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 12px;
 }
